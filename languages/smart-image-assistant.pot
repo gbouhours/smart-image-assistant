@@ -1,0 +1,322 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Smart Image Assistant 2.0.0\n"
+"POT-Creation-Date: 2026-06-19 10:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: smart-image-assistant\n"
+
+#. Provider: Cloudflare Workers AI
+msgid "Cloudflare Workers AI"
+msgstr ""
+
+#. Provider: OpenRouter
+msgid "OpenRouter"
+msgstr ""
+
+#. Provider: OpenAI
+msgid "OpenAI"
+msgstr ""
+
+#: Cloudflare description
+msgid "Uses Cloudflare Workers AI text-to-image models (e.g., Flux.1 Schnell). Requires a Cloudflare Account ID and API Token with AI:Create permission."
+msgstr ""
+
+#: OpenRouter description
+msgid "Uses OpenRouter API to access multiple AI image generation models. Requires an OpenRouter API key."
+msgstr ""
+
+#: OpenAI description
+msgid "Uses OpenAI GPT-4o / GPT-5 models with native image generation via Chat Completions API. Requires an OpenAI API key."
+msgstr ""
+
+#: Settings
+msgid "General Settings"
+msgstr ""
+
+msgid "Default AI Provider"
+msgstr ""
+
+msgid "Default Image Format"
+msgstr ""
+
+msgid "Prompt Template"
+msgstr ""
+
+msgid "Enabled Post Types"
+msgstr ""
+
+msgid "Auto-Generation"
+msgstr ""
+
+msgid "Smart Image Assistant"
+msgstr ""
+
+msgid "AI Provider Configuration"
+msgstr ""
+
+msgid "Configure at least one provider below. The default provider will be used for image generation."
+msgstr ""
+
+msgid "✓ Configured"
+msgstr ""
+
+msgid "⚠ Not configured"
+msgstr ""
+
+msgid "Account ID"
+msgstr ""
+
+msgid "Your Cloudflare Account ID"
+msgstr ""
+
+msgid "Located in your Cloudflare dashboard (right sidebar or URL)."
+msgstr ""
+
+msgid "API Token"
+msgstr ""
+
+msgid "Cloudflare API Token"
+msgstr ""
+
+msgid "Create a User API Token in Cloudflare Profile > API Tokens with Workers AI:Edit permission."
+msgstr ""
+
+msgid "Model"
+msgstr ""
+
+msgid "Select the text-to-image model to use. You can enter a custom model slug in the text field below if needed."
+msgstr ""
+
+msgid "Custom Model Slug"
+msgstr ""
+
+msgid "Or type a custom model slug..."
+msgstr ""
+
+msgid "The custom model slug overrides the dropdown selection."
+msgstr ""
+
+msgid "Image Size (px)"
+msgstr ""
+
+msgid "Image dimensions for Cloudflare Workers AI (64–2048). Only Cloudflare respects these dimensions."
+msgstr ""
+
+msgid "API Key"
+msgstr ""
+
+msgid "Your OpenRouter API Key"
+msgstr ""
+
+msgid "Create an API key at openrouter.ai/keys"
+msgstr ""
+
+msgid "Select the image generation model. You can enter a custom model slug below."
+msgstr ""
+
+msgid "sk-..."
+msgstr ""
+
+msgid "Create an API key at platform.openai.com/api-keys"
+msgstr ""
+
+msgid "Select the GPT model. All support native image generation."
+msgstr ""
+
+msgid "Aspect Ratio"
+msgstr ""
+
+msgid "Aspect ratio injected into the AI prompt. The model decides the actual output size."
+msgstr ""
+
+msgid "16:9 — Landscape"
+msgstr ""
+
+msgid "2:3 — Portrait"
+msgstr ""
+
+msgid "1:1 — Square"
+msgstr ""
+
+msgid "Save Settings"
+msgstr ""
+
+msgid "Select which AI provider to use by default when generating featured images."
+msgstr ""
+
+msgid "Default image format. Not all providers support all formats."
+msgstr ""
+
+msgid "Prompt template with {{title}} and {{excerpt}} tokens."
+msgstr ""
+
+msgid "Use {{title}} and {{excerpt}} placeholders. They will be replaced with the post title and excerpt/content at generation time."
+msgstr ""
+
+msgid "No post types with thumbnails found."
+msgstr ""
+
+msgid "Select post types where the generator panel appears in the editor sidebar."
+msgstr ""
+
+msgid "Automatically generate a featured image when a post is saved, if no featured image is already set."
+msgstr ""
+
+msgid "When enabled, the plugin will generate an image using the default provider each time a post is saved without a featured image."
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+#: Error messages
+msgid "Cloudflare Workers AI settings are incomplete."
+msgstr ""
+
+msgid "OpenRouter API key is missing."
+msgstr ""
+
+msgid "OpenRouter model is not selected."
+msgstr ""
+
+msgid "OpenAI API key is missing."
+msgstr ""
+
+msgid "No AI provider configured."
+msgstr ""
+
+msgid "%s is not fully configured. Please check your settings."
+msgstr ""
+
+msgid "Unexpected response from Cloudflare Workers AI."
+msgstr ""
+
+msgid "No image data returned by Cloudflare Workers AI."
+msgstr ""
+
+msgid "Cloudflare Workers AI HTTP error %d: %s"
+msgstr ""
+
+msgid "Unexpected response from OpenRouter."
+msgstr ""
+
+msgid "No image data returned by OpenRouter."
+msgstr ""
+
+msgid "OpenRouter HTTP error %d: %s"
+msgstr ""
+
+msgid "OpenRouter DALL-E HTTP error %d: %s"
+msgstr ""
+
+msgid "No image data returned by OpenRouter DALL-E."
+msgstr ""
+
+msgid "Unexpected response from OpenAI."
+msgstr ""
+
+msgid "No image data returned by OpenAI."
+msgstr ""
+
+msgid "OpenAI HTTP error %d: %s"
+msgstr ""
+
+msgid "Failed to decode image data."
+msgstr ""
+
+msgid "Failed to insert attachment."
+msgstr ""
+
+msgid "Failed to set featured image."
+msgstr ""
+
+#: editor.js
+msgid "Please add a title before generating a featured image."
+msgstr ""
+
+msgid "Please select an AI provider."
+msgstr ""
+
+msgid "Image generated successfully. Preview below."
+msgstr ""
+
+msgid "Unexpected response from server."
+msgstr ""
+
+msgid "Request failed."
+msgstr ""
+
+msgid "No generated image to set. Please generate first."
+msgstr ""
+
+msgid "Invalid preview image. Please generate again."
+msgstr ""
+
+msgid "Featured image set successfully!"
+msgstr ""
+
+msgid "Failed to set featured image."
+msgstr ""
+
+msgid "No providers configured"
+msgstr ""
+
+msgid "AI Provider"
+msgstr ""
+
+msgid "Using defaults"
+msgstr ""
+
+msgid "Modify default size and format settings"
+msgstr ""
+
+msgid "Width (px)"
+msgstr ""
+
+msgid "Height (px)"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Custom Prompt"
+msgstr ""
+
+msgid "Use {{title}} and {{excerpt}} placeholders. Edit this prompt to generate a specific style for this post (photo, illustration, etc.)."
+msgstr ""
+
+msgid "Generate Featured Image"
+msgstr ""
+
+msgid "Generated image preview"
+msgstr ""
+
+msgid "View Image"
+msgstr ""
+
+msgid "(Generated Based on Title and Excerpt)"
+msgstr ""
+
+msgid "Generated Image Preview (Based on Title and Excerpt)"
+msgstr ""
+
+msgid "Set as Featured Image"
+msgstr ""
+
+msgid "Featured image set successfully."
+msgstr ""
+
+msgid "Smart Image Assistant"
+msgstr ""
+
+#: REST API
+msgid "Missing post ID."
+msgstr ""
+
+msgid "Permission denied."
+msgstr ""
+
+msgid "Missing image to set as featured."
+msgstr ""
