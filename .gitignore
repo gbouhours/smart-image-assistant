@@ -1,0 +1,24 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE settings
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Dependency / build outputs
+node_modules/
+vendor/
+
+# WordPress / local environment files
+wp-config.php
+wp-config-local.php
+debug.log
+
+# Optional packaged archives
+*.zip
+*.tar.gz
