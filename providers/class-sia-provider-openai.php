@@ -129,8 +129,9 @@ class SIA_Provider_OpenAI extends SIA_AI_Provider {
         $code = wp_remote_retrieve_response_code($resp);
         $raw  = wp_remote_retrieve_body($resp);
         if ($code < 200 || $code >= 300) {
-            if (defined('WP_DEBUG') && WP_DEBUG) error_log('SIA OpenAI HTTP '.$code.': '.substr($raw,0,500));
-            return new WP_Error('sia_oai_http', __('OpenAI error','smart-image-assistant').' '.$code);
+            if (defined('WP_DEBUG') && WP_DEBUG) error_log('SIA OpenAI HTTP '.$code);
+            $message = $this->extract_error_message($data ?? null, $raw, $code);
+            return new WP_Error('sia_oai_http', sprintf(__('OpenAI HTTP %1$d: %2$s','smart-image-assistant'), $code, $message));
         }
 
         $data = json_decode($raw, true);
@@ -146,7 +147,7 @@ class SIA_Provider_OpenAI extends SIA_AI_Provider {
             }
             // Fallback to URL
             $url = $item['url'] ?? null;
-            if ($url) {
+        if ($url) {
                 $downloaded = $this->download_image($url);
                 if ($downloaded) return $downloaded;
             }
@@ -167,13 +168,19 @@ class SIA_Provider_OpenAI extends SIA_AI_Provider {
     }
 
     private function download_image(string $url): ?array {
-        $resp = wp_remote_get($url, ['timeout' => 60]);
+        if (!$this->is_safe_image_url($url)) return null;
+        $resp = wp_safe_remote_get($url, [
+            'timeout' => 20,
+            'redirection' => 0,
+            'limit_response_size' => 10 * MB_IN_BYTES,
+        ]);
         if (is_wp_error($resp)) return null;
         if (wp_remote_retrieve_response_code($resp) >= 300) return null;
         $body = wp_remote_retrieve_body($resp);
         if (!$body) return null;
         $content_type = (string) wp_remote_retrieve_header($resp, 'content-type');
-        $format = $this->mime_to_format($content_type) ?: 'png';
+        $format = $this->mime_to_format($content_type);
+        if ($format === null) return null;
         return [
             'base64' => base64_encode($body),
             'mime' => $this->format_to_mime($format),
@@ -208,4 +215,33 @@ class SIA_Provider_OpenAI extends SIA_AI_Provider {
     }
 
     public function get_endpoint_url(array $s): string { return 'https://api.openai.com/v1/images/generations'; }
+
+    private function is_safe_image_url(string $url): bool {
+        $parts = wp_parse_url($url);
+        if (!is_array($parts) || empty($parts['scheme']) || strtolower($parts['scheme']) !== 'https' || empty($parts['host'])) {
+            return false;
+        }
+        if (!empty($parts['user']) || !empty($parts['pass'])) {
+            return false;
+        }
+        $host = strtolower((string) $parts['host']);
+        if (in_array($host, ['localhost', '127.0.0.1', '::1'], true) || str_ends_with($host, '.local')) {
+            return false;
+        }
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return false;
+        }
+        return (bool) wp_http_validate_url($url);
+    }
+
+    private function extract_error_message($data, string $raw, int $code): string {
+        if (is_array($data)) {
+            $message = $data['error']['message'] ?? $data['message'] ?? $data['errors'][0]['message'] ?? '';
+            if (is_string($message) && $message !== '') {
+                return $message;
+            }
+        }
+        $text = wp_strip_all_tags(substr($raw, 0, 500));
+        return $text !== '' ? $text : ('HTTP '.$code);
+    }
 }

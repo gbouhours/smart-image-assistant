@@ -182,8 +182,12 @@ class Smart_Image_Assistant {
     }
 
     private function create_attachment(int $pid, string $b64, string $mime = 'image/png', string $ext = 'png') {
-        $bin = base64_decode($b64);
+        $bin = base64_decode($b64, true);
         if ($bin === false) return new WP_Error('sia_decode', __('Decode error.','smart-image-assistant'));
+        if (strlen($bin) > 10 * MB_IN_BYTES) return new WP_Error('sia_image_too_large', __('Image too large.','smart-image-assistant'));
+        if (!function_exists('getimagesizefromstring') || @getimagesizefromstring($bin) === false) {
+            return new WP_Error('sia_invalid_image', __('Invalid image data.','smart-image-assistant'));
+        }
         $ext = in_array($ext, ['png', 'jpg', 'jpeg', 'webp'], true) ? $ext : 'png';
         if ($ext === 'jpeg') { $ext = 'jpg'; }
         $mime = in_array($mime, ['image/png', 'image/jpeg', 'image/webp'], true) ? $mime : 'image/png';
@@ -220,6 +224,29 @@ class Smart_Image_Assistant {
         register_rest_route('smart-image-assistant/v1', '/generate', [
             'methods'=>'POST',
             'permission_callback'=>fn($r)=>current_user_can('edit_post', intval($r['postId'])),
+            'args' => [
+                'postId' => [
+                    'required' => true,
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => fn($value) => absint($value) > 0,
+                ],
+                'width' => [
+                    'required' => false,
+                    'sanitize_callback' => 'absint',
+                ],
+                'height' => [
+                    'required' => false,
+                    'sanitize_callback' => 'absint',
+                ],
+                'provider' => [
+                    'required' => false,
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'customPrompt' => [
+                    'required' => false,
+                    'sanitize_callback' => 'sanitize_textarea_field',
+                ],
+            ],
             'callback'=>function($r) {
                 $pid = intval($r->get_param('postId'));
                 $w = intval($r->get_param('width')); $h = intval($r->get_param('height'));
@@ -251,6 +278,29 @@ class Smart_Image_Assistant {
         register_rest_route('smart-image-assistant/v1', '/set-featured', [
             'methods'=>'POST',
             'permission_callback'=>fn($r)=>current_user_can('edit_post', intval($r['postId'])),
+            'args' => [
+                'postId' => [
+                    'required' => true,
+                    'sanitize_callback' => 'absint',
+                    'validate_callback' => fn($value) => absint($value) > 0,
+                ],
+                'attachmentId' => [
+                    'required' => false,
+                    'sanitize_callback' => 'absint',
+                ],
+                'imageBase64' => [
+                    'required' => false,
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'mime' => [
+                    'required' => false,
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+                'extension' => [
+                    'required' => false,
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
             'callback'=>function($r) {
                 $pid = intval($r->get_param('postId'));
                 $aid = intval($r->get_param('attachmentId'));

@@ -129,7 +129,7 @@ class SIA_Provider_OpenRouter extends SIA_AI_Provider {
         }
 
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('SIA OpenRouter no image found in response: '.substr($raw, 0, 2000));
+            error_log('SIA OpenRouter no image found in response');
         }
         return new WP_Error('sia_or_noimg', __('No image in OpenRouter response. The selected model may not support image generation on the Images API.','smart-image-assistant'), [
             'status' => 422,
@@ -290,13 +290,19 @@ class SIA_Provider_OpenRouter extends SIA_AI_Provider {
     }
 
     private function download_image(string $url): ?array {
-        $resp = wp_remote_get($url, ['timeout' => 60]);
+        if (!$this->is_safe_image_url($url)) return null;
+        $resp = wp_safe_remote_get($url, [
+            'timeout' => 20,
+            'redirection' => 0,
+            'limit_response_size' => 10 * MB_IN_BYTES,
+        ]);
         if (is_wp_error($resp)) return null;
         if (wp_remote_retrieve_response_code($resp) >= 300) return null;
         $body = wp_remote_retrieve_body($resp);
         if (!$body) return null;
         $content_type = (string) wp_remote_retrieve_header($resp, 'content-type');
-        $mime = $this->normalize_mime($content_type ?: 'image/png');
+        $mime = $this->normalize_mime($content_type ?: '');
+        if (!in_array($mime, ['image/png', 'image/jpeg', 'image/webp'], true)) return null;
         return ['base64' => base64_encode($body), 'mime' => $mime, 'extension' => $this->mime_to_extension($mime)];
     }
 
@@ -313,9 +319,8 @@ class SIA_Provider_OpenRouter extends SIA_AI_Provider {
         return match ($mime) {
             'image/jpg' => 'image/jpeg',
             'image/webp' => 'image/webp',
-            'image/svg+xml' => 'image/png',
             'image/jpeg', 'image/png' => $mime,
-            default => 'image/png',
+            default => 'application/octet-stream',
         };
     }
 
@@ -345,5 +350,23 @@ class SIA_Provider_OpenRouter extends SIA_AI_Provider {
 
     public function get_endpoint_url(array $s): string {
         return 'https://openrouter.ai/api/v1/images';
+    }
+
+    private function is_safe_image_url(string $url): bool {
+        $parts = wp_parse_url($url);
+        if (!is_array($parts) || empty($parts['scheme']) || strtolower($parts['scheme']) !== 'https' || empty($parts['host'])) {
+            return false;
+        }
+        if (!empty($parts['user']) || !empty($parts['pass'])) {
+            return false;
+        }
+        $host = strtolower((string) $parts['host']);
+        if (in_array($host, ['localhost', '127.0.0.1', '::1'], true) || str_ends_with($host, '.local')) {
+            return false;
+        }
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            return false;
+        }
+        return (bool) wp_http_validate_url($url);
     }
 }
